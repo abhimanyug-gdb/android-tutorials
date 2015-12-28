@@ -12,24 +12,41 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gdb.listtest.MainActivity"
     tools:showIn="@layout/activity_main">
-
-    <EditText
-        android:id="@+id/edit_text_add_item"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/button_add"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal">
+        <EditText
+            android:id="@+id/edit_text_add_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Add new item..."/>
+        <EditText
+            android:id="@+id/edit_text_filter_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Filter list item..." />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Item" />
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Item"
+            android:layout_gravity="center_horizontal" />
 
-    <Button
-        android:id="@+id/button_find_n_remove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Find and remove item" />
-
+        <Button
+            android:id="@+id/button_find_n_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find and remove item"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
     <ListView
         android:id="@+id/list_view_main_list"
         android:layout_width="match_parent"

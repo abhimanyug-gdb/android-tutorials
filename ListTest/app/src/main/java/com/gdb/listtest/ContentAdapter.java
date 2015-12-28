@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by devdatta on 24/12/15.
  */
-public class ContentAdapter extends BaseAdapter implements Filterable{
+public class ContentAdapter extends BaseAdapter {
     private List<ListContent> list = null;
     private LayoutInflater inflater;
 
@@ -58,7 +58,8 @@ public class ContentAdapter extends BaseAdapter implements Filterable{
         return convertView;
     }
 
-    @Override
+
+    /*@Override
     public Filter getFilter() {
         Filter filter = new Filter() {
             @Override
@@ -87,7 +88,7 @@ public class ContentAdapter extends BaseAdapter implements Filterable{
             }
         };
         return filter;
-    }
+    }*/
 
 
     public class ViewHolder{

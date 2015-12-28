@@ -20,8 +20,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    ArrayList<ListContent> mainList = new ArrayList<ListContent>();
-    ListView listViewMainList;
+    private ArrayList<ListContent> mainList = new ArrayList<>();
+    private ArrayList<ListContent> filteredList = new ArrayList<>();
+    private ListView listViewMainList;
     private ContentAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,13 +41,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listViewMainList = (ListView) findViewById(R.id.list_view_main_list);
-        ListContent listContent = new ListContent();
-        listContent.setTitle("Default");
-        mainList.add(listContent);
-        adapter = new ContentAdapter(MainActivity.this, mainList);
+        filteredList = new ArrayList<>(mainList);
+        adapter = new ContentAdapter(MainActivity.this, filteredList);
         listViewMainList.setAdapter(adapter);
 
         final EditText editTextAddItem = (EditText) findViewById(R.id.edit_text_add_item);
+        final EditText editTextFilterList = (EditText) findViewById(R.id.edit_text_filter_list);
+
+        editTextFilterList.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                MainActivity.this.adapter.getFilter().filter(s);
+                filter(s);
+                if (filteredList.size() > 0)
+                {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         Button buttonAdd = (Button) findViewById(R.id.button_add);
 
@@ -58,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 ListContent listContent = new ListContent();
                 listContent.setTitle(title);
                 mainList.add(listContent);
+                filteredList.clear();
+                filteredList.addAll(mainList);
                 adapter.notifyDataSetChanged();
 
             }
@@ -73,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 ListContent listContent = new ListContent();
                 listContent.setTitle(key);
                 int mPosition = mainList.indexOf(listContent);
-                if (mPosition == -1){
+                if (mPosition == -1) {
                     Toast.makeText(getApplicationContext(), "Given Item does not exists!!!",
                             Toast.LENGTH_SHORT).show();
                 } else {
@@ -82,24 +104,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-/*
-        editTextAddItem.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MainActivity.this.adapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
     }
+
+    private void filter(CharSequence constraint) {
+        filteredList.clear();
+        for (int i=0; i < mainList.size(); i++) {
+            String name = mainList.get(i).getTitle();
+            if (name.toLowerCase().contains(constraint.toString())) {
+                filteredList.add(mainList.get(i));
+            }
+        }
+        for (int i=0; i < filteredList.size(); i++)
+            Log.d("Filter Result : ",filteredList.get(i).getTitle().toString());
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
