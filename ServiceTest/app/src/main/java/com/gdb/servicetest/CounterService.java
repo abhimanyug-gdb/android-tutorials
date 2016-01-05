@@ -42,15 +42,6 @@ public class CounterService extends IntentService {
         super("CounterService");
     }
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public CounterService(String name) {
-        super(name);
-    }
-
     public int getCounter() {
         return counter;
     }
