@@ -1,5 +1,7 @@
 package com.gdb.listtest;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -55,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                MainActivity.this.adapter.getFilter().filter(s);
                 filter(s);
                 if (filteredList.size() > 0)
                 {
@@ -100,8 +102,38 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 } else {
                     mainList.remove(mPosition);
+                    filteredList.clear();
+                    filteredList.addAll(mainList);
                     adapter.notifyDataSetChanged();
                 }
+            }
+        });
+
+        listViewMainList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete entry!!!")
+                        .setMessage("Are you sure you want to delelte this entry?")
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int key = mainList.indexOf(filteredList.get(position));
+                                mainList.remove(key);
+                                filteredList.clear();
+                                filteredList.addAll(mainList);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .show();
+
+                return true;
             }
         });
     }

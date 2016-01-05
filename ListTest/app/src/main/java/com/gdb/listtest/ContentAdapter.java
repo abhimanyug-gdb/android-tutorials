@@ -58,41 +58,8 @@ public class ContentAdapter extends BaseAdapter {
         return convertView;
     }
 
-
-    /*@Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new FilterResults();
-                List<ListContent> filteredList= new ArrayList<>();
-
-                constraint = constraint.toString().toLowerCase();
-                for (int i=0; i < list.size() ;i++) {
-                    String name = list.get(i).getTitle();
-                    if (name.toLowerCase().startsWith(constraint.toString())) {
-                        filteredList.add(list.get(i));
-                    }
-                }
-
-                results.count = filteredList.size();
-                results.values = filteredList;
-                Log.d("Filter Result : ",results.values.toString());
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                list = (List<ListContent>) results.values;
-                notifyDataSetChanged();
-            }
-        };
-        return filter;
-    }*/
-
-
     public class ViewHolder{
-        TextView textViewTitle;
+        private TextView textViewTitle;
 
         public ViewHolder(View view) {
             textViewTitle = (TextView) view.findViewById(R.id.list_item_text);

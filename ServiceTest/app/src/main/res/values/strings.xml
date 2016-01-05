@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ServiceTest</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_Start">Start Counting</string>
+</resources>
