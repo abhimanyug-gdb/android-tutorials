@@ -7,6 +7,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,26 +23,59 @@ public class CounterService extends IntentService {
     private static final String TAG = CounterService.class.getSimpleName();
     private static final int COUNT_NOTIFICATION_ID = 5616;
     private int counter = 0;
+    private Messenger messenger;
     private Runnable r;
+
+    public static final int EMPLOYEE_OBJECT = 2;
 
     {
         r = new Runnable() {
             @Override
             public void run() {
                 int c = getCounter();
-                broadcastActionInc(c);
-                if (c % 20 == 0) {
+//                broadcastActionInc(c);
+                if (c % 20 == 0
+                        ) {
                     notifyCount();
                 }
                 if (c % 20 == 15)
                 {
                     cancleNotification();
                 }
+
+                Employee e = new Employee();
+
+                final Message message = Message.obtain(null, EMPLOYEE_OBJECT,e);
+                try {
+                    messenger.send(message);
+                } catch (RemoteException exception) {
+                    exception.printStackTrace();
+                }
+
                 setCounter(c + 1);
                 Log.d(TAG, "Counter : " + c);
                 handler.postDelayed(r, 1000);
             }
         };
+    }
+
+    public class Employee {
+        public String name;
+        public int age;
+        public float weight;
+
+        public Employee() {
+            name = "Default";
+            age = 0;
+            weight = 0;
+        }
+
+        public Employee(String name, int age, float weight) {
+            this.name = name;
+            this.age = age;
+            this.weight = weight;
+        }
+
     }
 
     private void cancleNotification() {
@@ -105,16 +141,23 @@ public class CounterService extends IntentService {
 
         if (intent != null) {
             final String action = intent.getAction();
+
+            messenger = (Messenger) intent.getParcelableExtra("messenger");
+
             if (ACTION_START_COUNTER.equals(action)) {
                 handler.postDelayed(r, 1000);
             } else if (ACTION_STOP_COUNTER.equals(action)){
                 stopSelf();
             }
         }
+
+
     }
 
-    public static void startActionStartCounter (Context context) {
+    public static void startActionStartCounter(Context context, Messenger messenger) {
+
         Intent intent = new Intent(context, CounterService.class);
+        intent.putExtra("messenger", messenger);
         intent.setAction(ACTION_START_COUNTER);
         context.startService(intent);
     }

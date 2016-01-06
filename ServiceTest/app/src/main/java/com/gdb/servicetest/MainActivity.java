@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -15,21 +18,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private boolean counterStatus = false;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            int counter = msg.what;
+            if (msg.what == CounterService.EMPLOYEE_OBJECT) {
+                CounterService.Employee e = msg.getData().getParcelable("employee");
+
+                TextView textView = (TextView) findViewById(R.id.textView);
+                textView.setText(e.name);
+                TextView textView2 = (TextView) findViewById(R.id.textView2);
+                textView2.setText(String.valueOf(e.age));
+                TextView textView3 = (TextView) findViewById(R.id.textView3);
+                textView3.setText(String.valueOf(e.weight));
+            }
+            TextView textViewTimer = (TextView) findViewById(R.id.textViewTimer);
+            textViewTimer.setText(String.valueOf(counter));
+        }
+    };
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction() == CounterService.BROADCAST_ACTION_INC) {
-                final int count = intent.getIntExtra(CounterService.NEW_COUNTER_PARAM,-1);
+                final int count = intent.getIntExtra(CounterService.NEW_COUNTER_PARAM,-1);/*
                 TextView textViewTimer = (TextView) findViewById(R.id.textViewTimer);
-                textViewTimer.setText(String.valueOf(count));
+                textViewTimer.setText(String.valueOf(count));*/
             }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +67,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (counterStatus == false) {
                     counterStatus = true;
-                    CounterService.startActionStartCounter(getApplicationContext());
-                }else {
+                    Messenger messenger = new Messenger(handler);
+                    CounterService.startActionStartCounter(getApplicationContext(), messenger);
+                } else {
                     counterStatus = false;
                     CounterService.startActionStopCounter(getApplicationContext());
                 }
             }
         });
 
-        IntentFilter filter = new IntentFilter();
+        final IntentFilter filter = new IntentFilter();
         filter.addAction(CounterService.BROADCAST_ACTION_INC);
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-        localBroadcastManager.registerReceiver(mBroadcastReceiver, filter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
     }
 
     @Override
