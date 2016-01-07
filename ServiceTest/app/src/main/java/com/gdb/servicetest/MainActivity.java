@@ -23,25 +23,31 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private boolean counterStatus = false;
-    private Handler handler = new Handler() {
+    private MyHandler handler = new MyHandler();
+
+    class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
             int counter = msg.what;
             if (msg.what == CounterService.EMPLOYEE_OBJECT) {
-                CounterService.Employee e = msg.getData().getParcelable("employee");
+                Bundle data = msg.getData();
+                Employee e = data.getParcelable("employee");
 
-                TextView textView = (TextView) findViewById(R.id.textView);
-                textView.setText(e.name);
-                TextView textView2 = (TextView) findViewById(R.id.textView2);
-                textView2.setText(String.valueOf(e.age));
-                TextView textView3 = (TextView) findViewById(R.id.textView3);
-                textView3.setText(String.valueOf(e.weight));
+                if (e != null) {
+                    TextView textView = (TextView) findViewById(R.id.textView);
+                    textView.setText(e.getName());
+                    TextView textView2 = (TextView) findViewById(R.id.textView2);
+                    textView2.setText(String.valueOf(e.getAge()));
+                    TextView textView3 = (TextView) findViewById(R.id.textView3);
+                    textView3.setText(String.valueOf(e.getWeight()));
+                    TextView textView4 = (TextView) findViewById(R.id.textView4);
+                    textView4.setText(getString(R.string.text_view_boolean) + e.isOnBench());
+                }
             }
             TextView textViewTimer = (TextView) findViewById(R.id.textViewTimer);
             textViewTimer.setText(String.valueOf(counter));
         }
-    };
-
+    }
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

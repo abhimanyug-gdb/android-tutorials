@@ -6,9 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -45,7 +48,14 @@ public class CounterService extends IntentService {
 
                 Employee e = new Employee();
 
-                final Message message = Message.obtain(null, EMPLOYEE_OBJECT,e);
+                e.setName("abhi");
+                e.setWeight((float) 89.099);
+                e.setAge(89);
+                e.setIsOnBench(true);
+                final Message message = Message.obtain(null, EMPLOYEE_OBJECT);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("employee",e);
+                message.setData(bundle);
                 try {
                     messenger.send(message);
                 } catch (RemoteException exception) {
@@ -57,25 +67,6 @@ public class CounterService extends IntentService {
                 handler.postDelayed(r, 1000);
             }
         };
-    }
-
-    public class Employee {
-        public String name;
-        public int age;
-        public float weight;
-
-        public Employee() {
-            name = "Default";
-            age = 0;
-            weight = 0;
-        }
-
-        public Employee(String name, int age, float weight) {
-            this.name = name;
-            this.age = age;
-            this.weight = weight;
-        }
-
     }
 
     private void cancleNotification() {
