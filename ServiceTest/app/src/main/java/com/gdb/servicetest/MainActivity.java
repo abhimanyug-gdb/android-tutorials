@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean counterStatus = false;
     private MyHandler handler = new MyHandler();
 
+    LocalService mService;
+    boolean mBound = false;
+
     class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
